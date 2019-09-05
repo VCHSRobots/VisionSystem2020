@@ -1,0 +1,7 @@
+DeepLearning/cocoapi
+DeepLearning/models
+DeepLearning/images
+DeepLearning/protoc*
+DeepLearning/cuda
+DeepLearning/settings.json
+__pycache__/*

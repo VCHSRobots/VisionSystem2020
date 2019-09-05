@@ -1,0 +1,7 @@
+{"tensorflow_install": "<Install Directory>/VisionSystem2020/DeepLearning/models",
+ "model_location": "faster_rcnn_inception_v2_coco_2018_01_28",
+ "train_dir": "train",
+ "test_dir": "test",
+ "out_dir": "detector_training",
+ "config_location": "default.config",
+ "train_data_location": "C:/Users/<Username>/AppData/Local/Temp"}
