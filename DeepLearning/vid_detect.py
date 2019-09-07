@@ -11,7 +11,9 @@ import time
 
 import detect
 
-def detectVideoStream(model_location, cam_num=0, detection_threshold=.4):
+from math import atan2, tan, degrees, radians
+
+def detectVideoStream(model_location, cam_num=0, detection_threshold=.4, vision_angle_range = (radians(100), radians(100))):
   #TODO: Turn this into an orientation system
   frames = 0
   time_passed = 0
@@ -35,12 +37,19 @@ def detectVideoStream(model_location, cam_num=0, detection_threshold=.4):
             if detection["detection_classes"][y][x] not in detection_boxes:
               detection_boxes[detection["detection_classes"][y][x]] = []
             detection_boxes[detection["detection_classes"][y][x]].append(detection["detection_boxes"][y][x])
-      visualization = detect.visualize(image, detection["detection_boxes"], detection["detection_scores"],
-                                      detection["detection_classes"], category_index)
+      #visualization = detect.visualize(image, detection["detection_boxes"], detection["detection_scores"],
+      #                                detection["detection_classes"], category_index)
       for object_num in detection_boxes.keys():
         for detection_box in detection_boxes[object_num]:
           box_width, box_height = detection_box[0]-detection_box[2], detection_box[1]-detection_box[3]
+          #1' = .22 width & height
+          #Distance is based solely off height for now,
+          #Angles are measured east and north of the axis extruding straight from the camera's vision
+          inches_dist = -3.1/box_width
           norm_detection_center = (detection_box[0]+detection_box[2])/2, (detection_box[1]+detection_box[3])/2
+          y, x = 1-norm_detection_center[0], norm_detection_center[1]
+          angles = getTargetAngles(inches_dist, x, y, vision_angle_range)
+          print(round(x, 4), round(y, 4), round(inches_dist, 4), round(degrees(angles[0]), 4), round(degrees(angles[1]), 4))
           detection_center = int(norm_detection_center[0]*height), int(norm_detection_center[1]*width)
           lines = (((detection_center[1]+8, detection_center[0]), (detection_center[1]-8, detection_center[0])),
                   (((detection_center[1], detection_center[0]+8), (detection_center[1], detection_center[0]-8))))
@@ -60,5 +69,19 @@ def detectVideoStream(model_location, cam_num=0, detection_threshold=.4):
         break
   cv2.destroyAllWindows()
 
+def getTargetAngles(distance, x_pos, y_pos, vision_angle_range, origin = (.5, .5)):
+  """
+  Gets the target's angles relative to the camera's origin
+  Returns in x, y format
+  """
+  x_range = 2*distance*tan(vision_angle_range[0]/2)
+  y_range = 2*distance*tan(vision_angle_range[1]/2)
+  origin_distance_x = x_pos-origin[0]
+  origin_distance_y = y_pos-origin[1]
+  unit_x_dist = origin_distance_x*x_range
+  unit_y_dist = origin_distance_y*y_range
+  angles = atan2(unit_x_dist, distance), atan2(unit_y_dist, distance)
+  return angles
+
 if __name__ == "__main__":
-  detectVideoStream("detectors/point_detector", 0)
+  detectVideoStream("detectors/faster_rcnn_pin", 0)

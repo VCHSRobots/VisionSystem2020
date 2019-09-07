@@ -74,7 +74,7 @@ Cons:
 Work to Implement: Camera Calibration has yet to be figured out - it may take some time
 
 ORB Feature Extractor with Quality Filtering:
-Uses ORB features extracted from multiple training images, and uses a quality filter to pick the best ones. The chosen features are then used in detection to find a Homography and object orientation.
+Finds the best ORB features by using a quality filter on multiple reference images. The chosen features are then used with a FLANN feature matcher to find a Homography and object orientation.
 Note: With only one training image, ORB was not reliable in experimental tests. However, multiple images and a good quality filter should solve that issue.
 Pros:
   Only uses one camera
@@ -84,3 +84,9 @@ Cons:
   May need more than one camera to eliminate extraneous returns from Homography decomposition
 Work to Implement: Camera Calibration must be working and software must be written to detect good features. The latter should not be hard to implement and test.
 
+Proposed Plan:
+I will find out if the ORB feature detector warrants further merit with more training images first, as the ORB/FLANN method is the only one that does not utilize TensorFlow. If ORB/FLANN detection proves too unreliable, we will order the Jetson Nano to pursue TensorFlow options.
+
+Team Costs:
+Jetson Nano for TensorFlow Computational capability
+8 Wheel Robot for pratical testing
