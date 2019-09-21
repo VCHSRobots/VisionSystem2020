@@ -2,11 +2,7 @@ sudo apt update
 python get_model_zoo.py
 sudo apt install python3-dev python3-pip
 sudo apt-get install protobuf-compiler python-pil python-lxml python-tk
-pip install --user Cython
-pip install --user contextlib2
-pip install --user jupyter
-pip install --user matplotlib
-pip install --user keras
+pip install Cython contextlib2 jupyter matplotlib keras
 git clone https://github.com/cocodataset/cocoapi.git
 git clone https://github.com/tensorflow/models.git
 rn cocoapi-master cocoapi
