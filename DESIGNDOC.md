@@ -89,4 +89,7 @@ I will find out if the ORB feature detector warrants further merit with more tra
 
 Team Costs:
 Jetson Nano for TensorFlow Computational capability
-8 Wheel Robot for pratical testing
+8 Wheel Robot (and shooter) for pratical testing
+
+Update 9/21/2019:
+  I have decided against using OpenCV object detection for now as it seems less consistent than TensorFlow, and because there is a way to achive depth perception and possibly orientation perception with two cameras and TensorFlow

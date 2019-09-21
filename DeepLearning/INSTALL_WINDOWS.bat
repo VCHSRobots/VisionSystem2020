@@ -22,5 +22,6 @@ cd models\research
 protoc object_detection\protos\*.proto --python_out=.
 python setup.py build
 python setup.py install
+pip install tensorflow-gpu
 echo "Installation sucessfull. Press Enter to end."
 PAUSE

@@ -5,6 +5,8 @@ Install CUDA Components:
   Click the following link to the CUDnn download page (https://developer.nvidia.com/rdp/cudnn-download). You will need to create a developer account with your email address. After you do so, download the most recent avalible CUDnn for CUDA 10.0. Extract the resulting zip file to your install location, then move the cuda file from the main extracted file to the root of your installation. Finally, add the location of the cuda and cuda\bin directiory to your path. 
 If you are on Windows, download the precompiled protobuf binary for your operating system from https://github.com/protocolbuffers/protobuf/releases/ and add the bin folder therin to your PATH.
 Run the INSTALL script for your operating system (.bat for Windows and .sh for Linux).
+Note: The script may take over an hour to process on SBCs like the Jetson Nano
+      If you recieve errors about pip/apt installs, you are probably missing dependencies. Look in the error output and google the name of any library or file that is said to be missing
 If on Linux, add the following lines to your ~/.bashrc file:
   export PYTHONPATH=$PYTHONPATH;<Install Directory>/models;<Install Directory>/models/research/;<Install Directory>/models/research/slim;
   export PATH=$PATH;$PYTHONPATH
