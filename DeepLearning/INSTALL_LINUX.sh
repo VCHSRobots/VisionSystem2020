@@ -1,5 +1,5 @@
-python get_model_zoo.py
 sudo apt update
+python get_model_zoo.py
 sudo apt install python3-dev python3-pip
 sudo apt-get install protobuf-compiler python-pil python-lxml python-tk
 pip install --user Cython
