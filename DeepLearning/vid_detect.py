@@ -11,6 +11,8 @@ import time
 
 import detect
 
+import numpy as np
+
 from math import atan2, tan, degrees, radians
 
 def detectVideoStream(model_location, cam_num=0, detection_threshold=.4, vision_angle_range = (radians(100), radians(100))):

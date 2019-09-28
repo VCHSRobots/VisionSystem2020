@@ -36,40 +36,42 @@ def detectBatch(model, images):
 
 def sdetect(sess, image_tensor, tensor_dict, image):
   """
-  Detects objects on an already-configured session and tensor dict
+  Detects objects on an already-configured session and tensor dict with a single image
   """
   output = sess.run(tensor_dict, feed_dict={image_tensor: np.expand_dims(image, axis=0)})
   return output
 
 def sdetectBatch(sess, image_tensor, tensor_dict, images):
   """
-  Detects objects on an already-configured session and tensor dict
+  Detects objects on an already-configured session and tensor dict with a set of images
   """
   output = sess.run(tensor_dict, feed_dict={image_tensor: images})
   return output
 
 def visualize(image, boxes, scores,
               classes, category_index,
-              use_normalized_coordinates=True, line_thickness=4):
+              use_normalized_coordinates=True, line_thickness=4, cam_num=0):
   img = vis_util.visualize_boxes_and_labels_on_image_array(
     image,
-    np.squeeze(boxes),
-    np.squeeze(classes).astype(np.int32),
-    np.squeeze(scores),
+    boxes[0],
+    classes[0].astype(np.int32),
+    scores[0],
     category_index=category_index,
     use_normalized_coordinates=use_normalized_coordinates,
     line_thickness=line_thickness
   )
   return img
 
-def getDetectorInput(model):
+def getDetectorInput(model, num_inputs=1):
   tensor_dict = {}
   operations = model.get_operations()
   all_tensor_names = {output.name for operation in operations for output in operation.outputs}
-  for key in keys:
-    tensor_name = "{}:0".format(key)
-    if tensor_name in all_tensor_names:
-      tensor_dict[key] = model.get_tensor_by_name(tensor_name)
+  for num in range(num_inputs):
+    for key in keys:
+      tensor_name = "{}:{}".format(key, num)
+      if tensor_name in all_tensor_names:
+        print(tensor_name)
+        tensor_dict[key] = model.get_tensor_by_name(tensor_name)
   image_tensor = tensor_dict.pop("image_tensor")
   return image_tensor, tensor_dict
 
@@ -95,3 +97,12 @@ def loadModel(model_location):
       graph_def.ParseFromString(serialized_graph)
       tf.import_graph_def(graph_def, name="")
   return model
+
+def loadModelData(model_location):
+  """
+  Opens a model and its labelmap from a filepath
+  Model location is a string pointing to the directory where the model is contained
+  """
+  model = loadModel("{}/frozen_inference_graph.pb".format(model_location))
+  labelmap = getVisualData("{}/label_map.pbtxt".format(model_location))
+  return model, labelmap
