@@ -2,3 +2,4 @@ These installation instructions are based off the documentation at https://devta
 They will only work for the Jetson Nano with JetPack 4.2S
 
 Run bash INSTALL_LINUX.sh
+Add PYTONPATH="$PYTHONPATH:<Install Directory>/models/research:<Install Directory>/models/research/slim:<Install Directory>/models/research/object_detection" to ~/.profile

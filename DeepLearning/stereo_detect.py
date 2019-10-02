@@ -25,12 +25,10 @@ def runSystem(left_cam_num, right_cam_num, model_location,
   """
   left_cam = cv2.VideoCapture(left_cam_num)
   right_cam = cv2.VideoCapture(right_cam_num)
-  #Loads model and its category index
-  model, category_index = detect.loadModelData(model_location)
+  #Loads model, its category index, and outlines of its inputs and outputs
+  model, category_index, image_tensor, tensor_dict = detect.loadModelDataFromDir(model_location)
   #Create session to be reused
   sess = tf.Session(graph=model)
-  #Gets outlines of the model's input and output structure
-  image_tensor, tensor_dict = detect.getDetectorInput(model)
   while True:
     left_ret, left_img = left_cam.read()
     right_ret, right_img = right_cam.read()
@@ -106,6 +104,7 @@ def stereoVision(detection_boxes, camera_distance_x,
                                                    camera_distance_x)
     object_angle_1, object_angle_2, target_distance_1, target_distance_2, = base_triangulation
     left_x_displacement, left_z_displacement = triangulation.findTargetDistances(object_angle_1, radians(left_cam_angle_x), target_distance_1)
+    right_x_displacement, right_z_displacement = triangulation.findTargetDistances(object_angle_2, radians(right_cam_angle_x), target_distance_2)
     left_depth, right_depth = triangulation.findCameraDepths(radians(left_vision_range_x), radians(right_vision_range_x),
                                                              object_angle_1, object_angle_2,
                                                              target_distance_1, target_distance_2)

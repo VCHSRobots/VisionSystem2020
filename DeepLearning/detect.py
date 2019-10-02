@@ -53,9 +53,9 @@ def visualize(image, boxes, scores,
               use_normalized_coordinates=True, line_thickness=4, cam_num=0):
   img = vis_util.visualize_boxes_and_labels_on_image_array(
     image,
-    boxes[0],
-    classes[0].astype(np.int32),
-    scores[0],
+    boxes[cam_num],
+    classes[cam_num].astype(np.int32),
+    scores[cam_num],
     category_index=category_index,
     use_normalized_coordinates=use_normalized_coordinates,
     line_thickness=line_thickness
@@ -98,11 +98,12 @@ def loadModel(model_location):
       tf.import_graph_def(graph_def, name="")
   return model
 
-def loadModelData(model_location):
+def loadModelDataFromDir(model_dir):
   """
-  Opens a model and its labelmap from a filepath
+  Opens a model and its associated data from a filepath
   Model location is a string pointing to the directory where the model is contained
   """
-  model = loadModel("{}/frozen_inference_graph.pb".format(model_location))
-  labelmap = getVisualData("{}/label_map.pbtxt".format(model_location))
-  return model, labelmap
+  model = loadModel("{}/frozen_inference_graph.pb".format(model_dir))
+  category_index = getVisualData("{}/label_map.pbtxt".format(model_dir))
+  image_tensor, tensor_dict = getDetectorInput(model)
+  return model, category_index, image_tensor, tensor_dict
