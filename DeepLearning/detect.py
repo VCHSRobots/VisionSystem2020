@@ -4,6 +4,7 @@ detect.py - Uses a trained model to detect objects given an image
 """
 
 import tensorflow as tf
+import tensorflow.contrib.tensorrt as trt
 import numpy as np
 
 from utils import visualization_utils as vis_util
@@ -98,12 +99,33 @@ def loadModel(model_location):
       tf.import_graph_def(graph_def, name="")
   return model
 
+def loadGraphDef(model_location):
+  """
+  Opens a model's GraphDef from its filepath, along with the associated model
+  """
+  model = tf.Graph()
+  with model.as_default():
+    graph_def = tf.GraphDef()
+    with tf.io.gfile.GFile(model_location, "rb") as f:
+      serialized_graph = f.read()
+      graph_def.ParseFromString(serialized_graph)
+      tf.import_graph_def(graph_def, name="")
+  return graph_def, model
+
+def getTrtModel(model_location):
+  """
+  Creates a Tensor Real Time model from a frozen inference graph 
+  """
+  graph_def, model, category_index, image_tensor, tensor_dict = loadModelDataFromDir(model_location)
+  trt_model = trt.create_inference_graph(graph_def, tensor_dict, max_batch_size=4)
+  return trt_model
+
 def loadModelDataFromDir(model_dir):
   """
   Opens a model and its associated data from a filepath
   Model location is a string pointing to the directory where the model is contained
   """
-  model = loadModel("{}/frozen_inference_graph.pb".format(model_dir))
+  graph_def, model = loadGraphDef("{}/frozen_inference_graph.pb".format(model_dir))
   category_index = getVisualData("{}/label_map.pbtxt".format(model_dir))
   image_tensor, tensor_dict = getDetectorInput(model)
-  return model, category_index, image_tensor, tensor_dict
+  return graph_def, model, category_index, image_tensor, tensor_dict
