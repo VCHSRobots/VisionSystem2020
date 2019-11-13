@@ -112,12 +112,12 @@ def loadGraphDef(model_location):
       tf.import_graph_def(graph_def, name="")
   return graph_def, model
 
-def getTrtModel(model_location):
+def optimizeModel(model_location):
   """
-  Creates a Tensor Real Time model from a frozen inference graph 
+  Creates an optimized Tensor Real Time model from a frozen inference graph 
   """
   graph_def, model, category_index, image_tensor, tensor_dict = loadModelDataFromDir(model_location)
-  trt_model = trt.create_inference_graph(graph_def, tensor_dict, max_batch_size=4)
+  trt_model = trt.create_inference_graph(graph_def, tensor_dict, max_batch_size=2, precision_mode="FP16", minimum_segment_size=50)
   return trt_model
 
 def loadModelDataFromDir(model_dir):
